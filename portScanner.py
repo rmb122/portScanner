@@ -9,7 +9,7 @@ from time import sleep
 RETRY_TIME = 2
 RETRY_WAIT_TIME = 0.1
 LISTEN_PORT = 12321
-THREAD_NUM = 10
+THREAD_NUM = 8
 
 PORT_FILTERED = 1
 PORT_OPEN = 2
@@ -122,7 +122,7 @@ class slaver():
 
     def startWork(self): #队列为空时退出
         sck = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
-        
+
         while not self.inputQueue.empty():
             remoteAddr = self.inputQueue.get()
             payload = makeTCPSyn(transIp2Bytes(self.localAddr[0]), transIp2Bytes(remoteAddr[0]), self.localAddr[1], remoteAddr[1])
@@ -164,20 +164,19 @@ class threadPool():
             thread.join()
 
 
-def recvResponse(localAddr, outputDict, stopSignal):
+def recvResponse(outputDict, stopSignal):
     '''
     接收回应的包.
     '''
     sck = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
-    sck.bind(localAddr)
     while not stopSignal.is_set():
         res = sck.recv(1024)
         result = analyzeRes(res)
         if result: #analyzeRes 对无效数据包不会返回值
             port, status = result
             outputDict[port] = status
-        
+
 
 def scanHost(remoteIp, ports):
     '''
@@ -190,12 +189,12 @@ def scanHost(remoteIp, ports):
     for port in ports:
         outputDict[port] = PORT_FILTERED #默认为被过滤
         inputQueue.put((remoteIp, port))
-    
+
     threads = threadPool(THREAD_NUM, inputQueue, outputDict, (hostIp, LISTEN_PORT))
     threads.startPool()
 
     signal = threading.Event()
-    t = threading.Thread(target=recvResponse, args=((hostIp, LISTEN_PORT), outputDict, signal))
+    t = threading.Thread(target=recvResponse, args=(outputDict, signal))
     t.setDaemon(True)
     t.start()
 
@@ -209,7 +208,7 @@ def scanHost(remoteIp, ports):
 def checkRoot():
     p = Popen("whoami", stdout=PIPE)
     p.wait()
-    
+
     if p.stdout.read().decode().replace("\n", "") != "root":
         print("Please run in root.")
         exit(0)
@@ -254,5 +253,5 @@ if __name__ == "__main__":
     }
     for r in result:
         print(str(r).rjust(5), " ", transDict[result[r]])
-    
-    
+
+
