@@ -216,7 +216,7 @@ def checkRoot():
 
 
 def checkPort(port):
-    if port < 1 or port > 65565:
+    if port < 1 or port > 65535:
         print("Please input vaild ports.")
         exit(0)
     else:
