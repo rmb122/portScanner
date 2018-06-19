@@ -247,9 +247,9 @@ if __name__ == "__main__":
     result = scanHost(remoteIp, ports)
 
     transDict = {
-        1: "FILTERED",
-        2: "OPEN",
-        3: "CLOSED"
+        PORT_FILTERED: "FILTERED",
+        PORT_OPEN: "OPEN",
+        PORT_CLOSE: "CLOSED"
     }
     for r in result:
         print(str(r).rjust(5), " ", transDict[result[r]])
