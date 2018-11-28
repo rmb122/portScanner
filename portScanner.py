@@ -7,7 +7,7 @@ from time import sleep
 
 
 RETRY_TIME = 2
-RETRY_WAIT_TIME = 0.1
+RETRY_WAIT_TIME = 0.2
 LISTEN_PORT = 12321
 THREAD_NUM = 8
 
