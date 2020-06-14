@@ -33,7 +33,6 @@
         },
         methods: {
             async submit() {
-                console.log(123)
                 let res = await login.login(this.form.password);
                 if (res.data.code === 200) {
                     this.$router.push({"path": "/panel"});

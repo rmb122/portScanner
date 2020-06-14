@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class Request {
-    base = 'http://127.0.0.1:8000/api';
+    base = './api/';
     instance;
 
     constructor() {

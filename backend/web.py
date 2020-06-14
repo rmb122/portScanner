@@ -22,7 +22,7 @@ Session(app, interface=session_interface)
 
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)  # For debug
 
-app_password = "admin"
+app_password = "2b1d667fff4eb9383e2f10c32cd29aff"
 task_list = []
 aps_scheduler: AsyncIOScheduler = None
 
@@ -191,15 +191,15 @@ async def login(request: Request):
     res = None
     if password is not None and password == app_password:
         res = Response.success("登录成功", None)
-        request['session']['admin'] = True
+        request.ctx.session['admin'] = True
     else:
         res = Response.fail("密码错误", None)
     return res
 
 
 @app.route("/api/status", methods=['GET'])
-async def login(request: Request):
-    if request['session'].get('admin'):
+async def status(request: Request):
+    if request.ctx.session.get('admin'):
         return Response.success("", None)
     else:
         return Response.fail("", None)
@@ -207,7 +207,7 @@ async def login(request: Request):
 
 @app.route("/api/list_task", methods=['GET'])
 async def list_task(request):
-    if not request['session'].get("admin"):
+    if not request.ctx.session.get("admin"):
         return Response.fail("", None)
 
     return Response.success("", task_list)
@@ -215,7 +215,7 @@ async def list_task(request):
 
 @app.route("/api/get_one_task", methods=['GET'])
 async def get_one_task(request: Request):
-    if not request['session'].get("admin"):
+    if not request.ctx.session.get("admin"):
         return Response.fail("", None)
 
     tid = request.json.get('tid', 0)
@@ -229,7 +229,7 @@ async def get_one_task(request: Request):
 
 @app.route("/api/add_task", methods=['POST'])
 async def add_task(request: Request):
-    if not request['session'].get("admin"):
+    if not request.ctx.session.get("admin"):
         return Response.fail("", None)
 
     attr = {'ports': str, 'hosts': str, 'skip_ping': bool, 'only_ping': bool, 'ping_timeout': int, 'port_timeout': int,
@@ -247,4 +247,4 @@ async def add_task(request: Request):
     asyncio.create_task(task.dispatch())
     return Response.success("创建成功", None)
 
-app.run()
+app.run(host="0.0.0.0", port=8000)

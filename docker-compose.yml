@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+        - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+        - ./frontend/dist/:/static/:ro
+    command: [nginx, '-g', 'daemon off;']
+    ports:
+        - "19131:80"
+    
+  python:
+    build: .
+

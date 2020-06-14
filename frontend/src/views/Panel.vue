@@ -93,7 +93,10 @@
             }
         },
         async mounted() {
-            await this.refresh();
+            while (true) {
+                await this.refresh();
+                await new Promise((resolve) => {setTimeout(resolve, 60 * 1000)})
+            }
         },
         methods: {
             select_row(row) {

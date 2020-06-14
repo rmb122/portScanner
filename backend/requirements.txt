@@ -1,0 +1,5 @@
+sanic
+jsonpickle
+sanic_session
+apscheduler
+sanic_cors
