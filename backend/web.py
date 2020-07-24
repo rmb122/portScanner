@@ -17,10 +17,10 @@ from sanic_cors import CORS
 
 app = Sanic(__name__)
 
-session_interface = InMemorySessionInterface(samesite="None")  # For debug
+session_interface = InMemorySessionInterface(samesite="strict")  # For debug
 Session(app, interface=session_interface)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)  # For debug
+# CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)  # For debug
 
 app_password = "2b1d667fff4eb9383e2f10c32cd29aff"
 task_list = []
